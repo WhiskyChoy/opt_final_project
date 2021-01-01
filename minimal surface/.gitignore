@@ -1,2 +1,3 @@
-.vscode/
-__pychache__/
+.vscode/**/*
+__pychache__/**/*
+**/virtual_env/
