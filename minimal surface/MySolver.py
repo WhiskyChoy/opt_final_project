@@ -74,7 +74,7 @@ class MinimalSurfaceSolver(Solver):
             print(exp)
         return exp
 
-    def draw_3d(self, use_custom: bool=True, colorful: bool=False):
+    def draw_3d(self, use_custom: bool=False, colorful: bool=False):
         if use_custom:
             draw_custom(self.surface_points, self.support_points)
         else:
