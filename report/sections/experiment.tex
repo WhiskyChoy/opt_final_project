@@ -3,6 +3,36 @@ In this part, we will implement several unconstrained and constrained optimizati
 \subsection{Minimum Surfaces}
 At first, we will illustrate five different boundary functions. Then we will choose one advanced algorithm to solve the minimum surface problem with five boundary functions and different discretization degree. Subsequently, we utilize other unconstrained optimization alogorithms and compare their perfomance from the perspective of relative objective function gap and iteration of norm of gradients. Finally, additional techniques such as exact line search, Barzilai-Borwein steps and inertial techniques will be introduced to accelerate the convergence process.
 \subsubsection{Boundary Functions}
+\begin{figure}[!htbp]
+    \centering
+    \subfigure[$ r_1(x, y)=1+\sin (2 \pi x)$]
+    {
+    \centering
+    \includegraphics[width=0.3\columnwidth]{images/boundary_1.png}
+    }
+    \subfigure[$ r_2(x, y)=1+\cos (1 / (x+0.001) )$]
+    {
+    \centering
+    \includegraphics[width=0.3\columnwidth]{images/boundary_2.png}
+    }
+    \subfigure[$ r_3(x, y)=\frac{1}{2}-\left|y-\frac{1}{2}\right|$]
+    {
+    \centering
+    \includegraphics[width=0.3\columnwidth]{images/boundary_3.png}
+    }
+    \subfigure[$ r_4(x, y)=(1+\exp (x y))^{-1}$]
+    {
+    \centering
+    \includegraphics[width=0.3\columnwidth]{images/boundary_4.png}
+    }
+    \subfigure[$ r_5(x, y)=1+\arcsin (-1+2 \sqrt{x y})$]
+    {
+    \centering
+    \includegraphics[width=0.3\columnwidth]{images/boundary_5.png}
+    }
+    \caption{Five Boundaries in the Minimal Surface Problem}
+    \label{fig:boundary}  
+\end{figure}
 \subsubsection{Minimum Surface Results}
 \subsubsection{Perfomance Analysis}
 \subsubsection{Additional Techniques}
