@@ -1,0 +1,7 @@
+The iteration number is: 784
+The final objective function value is: 5.45
+Cost time: 19.18 seconds
+
+The iteration number is: 873
+The final objective function value is: 5.45
+Cost time: 123.17 seconds
