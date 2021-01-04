@@ -3,6 +3,7 @@ In this part, we will implement several unconstrained and constrained optimizati
 \subsection{Minimum Surfaces}
 At first, we will illustrate five different boundary functions. Then we will choose one advanced algorithm to solve the minimum surface problem with five boundary functions and different discretization degree. Subsequently, we utilize other unconstrained optimization alogorithms and compare their perfomance from the perspective of relative objective function gap and iteration of norm of gradients. Finally, additional techniques such as exact line search, Barzilai-Borwein steps and inertial techniques will be introduced to accelerate the convergence process.
 \subsubsection{Boundary Functions}
+Here, figure \ref{fig:boundary} presents five different boundary function mentioned in the report requirement document. We will then determine the minimum surfaces using different boundary functions via our proposed algorithms.
 \begin{figure}[!htbp]
     \centering
     \subfigure[$ r_1(x, y)=1+\sin (2 \pi x)$]
@@ -34,6 +35,7 @@ At first, we will illustrate five different boundary functions. Then we will cho
     \label{fig:boundary}  
 \end{figure}
 \subsubsection{Minimum Surface Results}
+In order to demonstrate how the boundary function and discretization degree influence the minimal surface area, we choose globalized newton method to test these effects.
 \subsubsection{Perfomance Analysis}
 \subsubsection{Additional Techniques}
 \subsection{Obstacle Problems}

@@ -84,6 +84,16 @@ def exp_3():
     solver_7.draw_g_norm()
     solver_7.draw_3d()
 
+def exp_4():
+    problem_auto_grad = MyProblem.MSAutoGradProblem(9, r_0)
+    init_vars = np.random.rand(problem_auto_grad.dim)
+    solver_1.solve(problem_auto_grad, init_vars, show_process=False)
+    solver_1.show_summary()
+    solver_1.draw_solved_gap()
+    solver_1.draw_g_norm()
+    solver_1.draw_3d()
+
+    
 exp_arr = [exp_1]
 
 
@@ -93,4 +103,4 @@ def do_all_experiments():
 
 
 if __name__ == '__main__':
-    exp_3()
+    exp_4()
