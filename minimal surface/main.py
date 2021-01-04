@@ -74,13 +74,15 @@ def exp_1():
 #         solver_0.solve(problem)
 #         solver_0.draw_3d()
 def exp_3():
-    n = 15
-    obstacle_generator = ObstacleGenerator(n-2, 0, 1, 2)
+    n = 17
+    obstacle_generator = ObstacleGenerator(n-2)
     obstacle_generator.add_unit_rect()
     obstacle_generator.add_point()
     problem = MyProblem.MSSymbolicEvalProblem(n, get_constant_r(1), obstacle_generator.obstacle, False)
-    solver_8.solve(problem)
-    solver_8.draw_3d()
+    solver_7.solve(problem, show_process=True)
+    solver_7.draw_solved_gap()
+    solver_7.draw_g_norm()
+    solver_7.draw_3d()
 
 exp_arr = [exp_1]
 

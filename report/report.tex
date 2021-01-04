@@ -1,0 +1,327 @@
+\documentclass[11pt]{article} 
+\usepackage{geometry}
+\usepackage{bm}
+% \geometry{left=2cm,right=2cm,top=1cm,bottom=2cm}
+\usepackage{simpleConference}
+\usepackage{times}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{url,hyperref}
+
+\usepackage{booktabs} 
+\usepackage{amsfonts}  
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{subfigure}
+\usepackage{setspace}
+\renewcommand{\baselinestretch}{1.0}
+
+\usepackage[sort]{natbib}  % 引文格式
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{setspace} % 可设置表格行高
+% \usepackage[colorlinks, linkcolor=blue]{hyperref} % 超链接
+\usepackage{float} %图片紧跟文字
+\usepackage{subfigure}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\renewcommand{\algorithmicrequire}{ \textbf{Input:}}
+\renewcommand{\algorithmicensure}{ \textbf{Output:}}
+\usepackage{array}
+% set page geometry
+% \usepackage[verbose=true,letterpaper]{geometry}
+\AtBeginDocument{
+  \newgeometry{
+    textheight=9in,
+    textwidth=6.8in,
+    top=1in,
+    headheight=14pt,
+    headsep=25pt,
+    footskip=30pt
+  }
+}
+
+% \widowpenalty=10000
+% \clubpenalty=10000
+% \flushbottom
+% \sloppy
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{} 
+\rhead{} 
+\chead{\bfseries CIE6010 Final Report} % CIE6036 Project Report
+% \lfoot{} 
+\cfoot{\thepage}
+% \rfoot{\thepage} 
+\renewcommand{\headrulewidth}{0.4pt} 
+% \renewcommand{\footrulewidth}{0.4pt}
+\usepackage[font=small,labelfont=bf]{caption}
+
+
+\begin{document}
+
+\title{Minimum Surfaces and Obstacle Problems}
+
+% \author{Yu Fangchen, Cai Weilin, Li Chi, Chen Weibin \\
+% 	\and
+% 	Department of Computer and Information Engineering\\
+% 	The Chinese University of Hong Kong, Shenzhen \\ \\
+% 	\today
+% }
+
+\author{
+	Cai Weilin \\
+	\texttt{220019066@link.cuhk.edu.cn} \\
+	\and
+	Li Chi \\
+	\texttt{220019044@link.cuhk.edu.cn} \\
+	\and
+	Department of Computer and Information Engineering\\
+	The Chinese University of Hong Kong, Shenzhen \\ \\
+	\today
+}
+
+\maketitle
+
+\small
+
+
+\begin{abstract}
+% TODO Change Dynamic Programming into other expression (important) .
+Minimum surfaces and obstacle problems are well-defined to determine the surface with minimal area that lies above an obstacle with given boundary conditions. In this report, we first formulate a unconstrained minimum surface problem without considering obstacles, and then addtional obstacle constraints are introduced to construct a constrained optimization problem. Besides, an example of the problem is given and solved with a linear finite-dimensional minimization method via a discretization scheme. Firstly, we triangulate the domain of definition, and then approxiamte the objective by a piecewise linear function on each triangle considering both boundary and obstacle constraints. Here, we introduce several efficient algorithms, including unconstrained and constrained optimization methods, for tackling the pre-defined problem. Also, we analyze the perfomance of each proposed method as well as different parameter choices in boundary function and discretization degree. Lastly, we discuss and conclude our observations and results when implementing different optimization methods for different problems in depth.
+
+\end{abstract}
+%\keywords{Minimum surface \and Obstacle problem \and Finite element approximation \and Nonlinear programming}
+
+
+
+
+\section{Introduction}
+The minimum surfaces and obstacle problems aim to generate a two dimensional surface of minimal area with a given closed curve in $\mathbb R^{3}$ as boundary \cite{dolan2004benchmarking}. It's regarded as a classic motivating example in the mathematical area of variational inequalities and free boundary problems, and widely applided to the domain of physics, biology, financial mathematics and optimal control \cite{zosso2017efficient,ros2018obstacle,caffarelli1998obstacle}. In \cite{ros2018obstacle}, the author classisifies the obstacle problems with free boundary into three categories: classical obstacle problem, the thin obstacle problem and obstacle problems for integro-differential operators. Meanwhile, he describles comprehensively the classical regularity theory for the defined obstacle problem and with its applications in such areas. In recent years, some efficent and advanced methodologies, such as sequencial quadratic programming \cite{liu2009solution}, primal-dual method \cite{zosso2017efficient} and PDE accelerations \cite{calder2019pde} have been proposed to solve these obstacle problems. The classical formulation can be represented as follows. Suppose that the surface can be showed in nonparametric form $z:\mathbb R^{2} \rightarrow$ $\mathbb R,$ and the requirement is $z \geq z_{L}$ for some obstacle $z_{L} .$ The solution of this obstacle problem minimizes the function $f: K \rightarrow \mathbb R$
+$$
+f(z)=\int_{D} \sqrt{1+\|\nabla z(x)\|^{2}} d x \eqno(1)
+$$
+over the convex set
+$$
+K=\left\{z \in H^{1}(D) \mid z(x)=z_{D}(x) \text { for } x \in \partial D, z(x) \geq z_{L}(x) \text { for } x \in D\right\}  \eqno(2)
+$$
+where $\|\bullet\|$ represents the Euclidean norm, $H^{1}(D)$ is the space of functions with gradients in $L^{2}(D) .$ The function $z_{D}: \partial D \rightarrow \mathbb R$ defines the boundary data, and $z_{L}:D \rightarrow \mathbb R$ is the obstacle. We assume that $z_{L} \leq z_{D}$ on the boundary $\partial D$.
+
+In this project, we first construct a unconstrined optimization problem by only considering minimal surface problems for a special issue. Subsequently, obstacle constraints will be introduced to complete the whole model formulation. Several effective unconstrained and constrained algorithms will also be implemented to test the perfomance for different defined problems. We then summarize and conclude our main results and observations for these experiments. 
+
+The reminder of the report is organized as follows. Section 2 gives a description and mathematicla formualtion for these two problems. Section 3 describes our utilized unconstrained and constrained algorithms. In Section 4, we compare and analyze the results of these methods. Section 5 presents in-depth discussion on a variety of numerical experiments. We conclude in Section 6 with some future works.
+
+\section{Mathematic Model}
+In this part, we describe the minimum surfaces and obstacles problems in Section 2.1 and formulate them mathematically in Section 2.2.
+\subsection{Model Description}
+\subsubsection{Minimum Surfaces}
+The minimum surface problem is to generate a two dimensional surface that is defined on a set $\Omega \subset \mathbb{R}^{2}$ only from data and observations given at the boundary of $\Omega.$ In particular, let $\Gamma=\partial \Omega$ denote the boundary of the set $\Omega$ and let $r: \Gamma \rightarrow \mathbb{R}$ be a given function on $\Gamma .$ Then, we will solve a discretized, finite-dimensional minimization task to find a function $q: \operatorname{cl} \Omega \rightarrow \mathbb{R}$ satisfying the following goals:
+
+\begin{itemize}
+    \item $ q(t)=r(t) \quad \forall t \in \Gamma$.
+    \item The graph of $q$ has minimum surface.
+\end{itemize}
+\subsubsection{Obstacle Problems}
+The minimum surface problem could be further extended into obstacle problems, which means the reference set $\Omega$ contains additional obstacles that need to be considered when building the function $q$. As shown previously, the boundary set $\Gamma=\partial \Omega$ and boundary function $r: \Gamma \rightarrow \mathbb{R}$ are the same as minimum surface problem. Moreover, let $\mathcal{B} \subset \Omega$ be an obstacle set and let $b: \mathcal{B} \rightarrow \mathbb{R}$ be a given obstacle function. Here, we will utilize different approaches to solve the constrained problem under different types of obstacles, to find a function $q: \operatorname{cl} \Omega \rightarrow \mathbb{R}$ satisfying the following goals:
+\begin{itemize}
+  \item $ q(t)=r(t) \quad \forall t \in \Gamma$. 
+  \item $ q(t) \geq b(t) \quad \forall t \in \mathcal{B} $.
+  \item The graph of $q$ has minimum surface.
+\end{itemize}
+
+
+
+\subsection{Model Formulation}
+\subsubsection{Minimum Surfaces}
+In order to solve the problem numerically, we utilize a discretized triangulating scheme to express the problem as a minimization task over the space of piecewise linear functions. In \cite{shen1992finite}, the linear finite dimensional approximation for the minimal surface with obstacle is analyzed while the existence and uniqueness of the solution for the discrete problem are shown, and meanwhile the error estimate of the approximation methodology is also obtained. 
+
+In this case, we follow the process of trianglation and our objective is transformed to find a function  $q: \operatorname{cl} \Omega \rightarrow \mathbb{R}$ via solving a minimization problem in the finite discretized approximation scheme. As shown in figure 1, we first assume that $\Omega=\left(a_{1}, b_{1}\right) \times\left(a_{2}, b_{2}\right)$ has a simple rectangular shape with $a_{1}<b_{1}, a_{2}<b_{2},$ and $a_{i}, b_{i} \in \mathbb{R}, i \in\{1,2\} .$ And then generate a regular grid with $m \cdot n$ nodes $t_{11}, \ldots, t_{1 n}, t_{21}, \ldots, t_{(m-1) n}, t_{m 1}, \ldots, t_{m n} \in \mathbb{R}^{2}$
+covering the set cl $\Omega$ while three neighboring nodes can form one of the triangles $T_{k} .$ Using a triangulation $\operatorname{cl} \Omega=\bigcup_{k=1}^{\kappa} T_{k}$, we then approximate and discretize $\operatorname{cl} \Omega$.
+\begin{figure*}[htbp]
+  \centering
+  \caption{Illustration of the discretization scheme}
+  \label{fig:discretization_scheme}
+\end{figure*}
+
+In particular, we set $\Omega=(0,1) \times(0,1) \in \mathbb R^{2}$ and $\Gamma=\partial \Omega$. Using triangulation, the set $\operatorname{cl} \Omega$ is discretized to $2 n^{2}$ triangles, with each point $t_{i, j}=\left(\frac{i}{n}, \frac{j}{n}\right), i=0,1, \ldots, n, j=0,1, \ldots, n .$ Our piecewise linear function $q_{T}: \mathrm{cl} \Omega \rightarrow \mathbb{R}$ is uniquely characterized by its node values:
+$$
+q_{T}\left(t_{i j}\right)=x_{i, j} \quad \forall i, j=0, \ldots, n  \eqno(3)
+$$
+along the boundary $\Gamma$, we have 
+$$
+q_{T}\left(t_{i j}\right)=x_{i j}=r\left(t_{i j}\right) \quad \forall t_{i j} \in \Gamma  \eqno(4)
+$$
+
+It's clear that $q_{T}$ builds a mapping from the set $\Omega$ to $\mathbb{R},$ which is an approximation of the two-dimensional surface.
+Therofore, our goal is to determine these $X$ such that the surface area of these triangles on cl $\Omega$ has minimum value.Thus, the full optimization problems is given as below:
+$$
+\min _{X=\left(x_{i, j}\right) \in \mathbb{R}^{n \times n}} f(X)=\sum_{k=1}^{\kappa} A_{k}(X) \qquad \text { s.t. } \quad x_{i, j}=r\left(t_{i j}\right) \ \forall t_{i j} \in \Gamma  \eqno(5)
+$$
+Where $A_{k}(X)$ denotes the area of the triangle $T_{K},$. Moreover, the corresponding decision variables can be diminished into $X=\left(x_{i, j}\right), i=1,2, \ldots, n-1$, $j=1,2, \ldots, n-1$
+since the value of $q_{T}$ on the boundary is given, we can omit these variables. Therefore, this optimization problem can be transferred into an unconstrained problem:
+$$
+\min _{X=\left(x_{i, j}\right) \in \mathbb{R}^{(n-1) \times(n-1)}} f(X)=\sum_{k=1}^{\kappa} A_{k}(X)  \eqno(6)
+$$
+With this regard, we treat $x_{i, j}, i \in\{0, n\}$ or $j \in\{0, n\}$ as known parameters. Hence, we can implement unconstrained optimization algorithms to solve the minimum surfaces problem.
+\subsubsection{Obstacle Problems}
+We can also utilize the same discretization scheme and triangulation technique as presented in minimum surface problems to approximate the target set $\operatorname{cl} \Omega$ and the function $q$ while satisfying the obstacle constraints. This is equivalent to 
+$$
+x_{i j} \geq b\left(t_{i j}\right) \quad \forall t_{i j} \quad \text { with } \quad t_{i j} \in \mathcal{B}  \eqno(7)
+$$
+then the obstacle problem can be represented as follows:
+$$
+\min _{X=\left(x_{i j}\right) \in \mathbb{R}^{m \times n}} \sum_{k=1}^{\kappa} A_{k}(X) \quad \text { s.t. } \quad\left[\begin{array}{ll}
+x_{i j}=r\left(t_{i j}\right) & \forall t_{i j} \in \Gamma \\
+x_{i j} \geq b\left(t_{i j}\right) & \forall t_{i j} \in \mathcal{B}
+\end{array}\right.  \eqno(8)
+$$
+
+
+\section{Approach}
+In this part, we will employ several unconstrained and constraints algorithms for 
+
+
+
+
+
+
+\subsection{Unconstrained Optimization Algorithms}
+\begin{algorithm}[H]
+  \caption{Gradient Descent Method (with Backtracking)}
+  \label{alg:Gradient}
+  \begin{algorithmic}[1]
+  \REQUIRE
+  Initial point $x^{0}$
+  \STATE For $k=0,1, \ldots$ \\
+  \STATE Choose stepsize $\alpha^{k}$ by backtracking. \\
+  \STATE $x^{k+1}=x^{k}-\alpha^{k} \nabla f\left(x^{k}\right)$. \\
+  \STATE Stop if $\left\|\nabla f\left(x^{k+1}\right)\right\| \leq \epsilon$. \\     
+  \ENSURE $x^{k+1}$ 
+ \end{algorithmic}
+ \end{algorithm} 
+ 
+ \begin{algorithm}[H]
+   \caption{Globalized Newton Method}
+   \label{alg:Newton}
+   \begin{algorithmic}[1]
+   \REQUIRE
+   Initial point $x^{0}, \beta_{1}, \beta_{2}, p$
+   \STATE For $k=0,1, \ldots$ \\
+   \STATE Compute the Newton direction $s^{k}$ by solving $\nabla^{2} f\left(x^{k}\right) s^{k}=-\nabla f\left(x^{k}\right)$. \\
+   \STATE If $-\nabla f\left(x^{k}\right)^{\mathrm{T}} s^{k} \geq \min \left\{\beta_{1}, \beta_{2}\left\|s^{k}\right\|^{p}\right\}\left\|s^{k}\right\|^{2}$, then set $d^{k}=s^{k}$. Otherwise set $d^{k}=-\nabla f\left(x^{k}\right)$. \\
+   \STATE Choose stepsize $\alpha^{k}$ by backtracking. \\  
+   \STATE $x^{k+1}=x^{k}+\alpha^{k} d^{k}$. \\
+   \STATE  Stop if $\left\|\nabla f\left(x^{k+1}\right)\right\| \leq \epsilon$. \\  
+   \ENSURE $x^{k+1}$ 
+  \end{algorithmic}
+  \end{algorithm} 
+ 
+ 
+ 
+ 
+ 
+ \begin{algorithm}[H]
+   \caption{L-BFGS Method}
+   \label{alg:L-BFGS}
+   \begin{algorithmic}[1]
+   \REQUIRE
+ Initial point $x^{0}, B_{0}$ \\
+   \STATE For $k=0,1, \ldots$ \\
+   \STATE Compute the quasi-Newton direction $d^{k}$ by solving $B_{k} s^{k}=-\nabla f\left(x^{k}\right), x^{k+1}=x^{k}+s^{k}$. \\
+   \STATE $\quad$ Stop if $\left\|\nabla f\left(x^{k+1}\right)\right\| \leq \epsilon$. \\
+   \STATE Set $y^{k}=\nabla f\left(x^{k+1}\right)-\nabla f\left(x^{k}\right), B_{k+1}^{\text {BFGS }}=B_{k}+\frac{y^{k}\left(y^{k}\right)^{\top}}{\left(y^{k}\right)^{\top} s^{k}}-\frac{\left(B_{k} s^{k}\right)\left(B_{k} s^{k}\right)^{\top}}{\left(s^{k}\right)^{\top} B_{k} s^{k}}$ \\
+   \ENSURE $x^{k+1}$ \\
+   \end{algorithmic}
+ \end{algorithm}
+ 
+\subsection{Constrained Optimization Algorithms}
+
+\begin{algorithm}[H]
+  \caption{Quadratic Penalty Method}
+  \label{alg:Penalty}
+  \begin{algorithmic}[1]
+  \REQUIRE
+  Initial point $x^{-1}$, penalty parameter $\alpha_{0}>0$
+  \STATE For $k=0,1, \ldots$ \\
+  \STATE Compute the global solution $x^{k}$ of the penalty problem $\min _{x} P_{\alpha_{k}}(x)$. \\     
+  \ENSURE Terminate if $x^{k} \in X$. Otherwise select $\alpha_{k+1}>\alpha_{k}$.  
+ \end{algorithmic}
+ \end{algorithm} 
+
+
+
+
+
+
+ \begin{algorithm}[H]
+  \caption{Projected Gradient Method}
+  \label{alg:Projected}
+  \begin{algorithmic}[1]
+  \REQUIRE
+  Initial point $x^{0} \in C, \sigma, \gamma \in(0,1)$
+  \STATE For $k=0,1, \ldots$ \\
+  \STATE $\quad$ Select $\lambda_{k}>0$ and compute $\nabla f\left(x^{k}\right)$ and the new direction $d^{k}=-F_{\lambda_{k}}\left(x^{k}\right)$.  \\
+  \STATE $\quad$ If $\left\|d^{k}\right\| \leq \lambda_{k} \epsilon$, then STOP and $x^{k}$ is output.  \\
+  \STATE Choose a maximal step size $\alpha_{k}$ by backtracking. \\    
+  \STATE Set $x^{k+1}=x^{k}+\alpha_{k} d^{k}$
+  %\ENSURE $x^{k+1}$ 
+ \end{algorithmic}
+ \end{algorithm} 
+
+
+
+\subsection{Addtional Techniques}
+In our experiment, we will explore four additional techniques (nonmonotone line search procedures, Barzilai-Borwein
+steps, inertial techniques and momentum, compact representation of the L-BFGS update) to adjust and potentially accelerate our proposed  algorithm. 
+Exact line search 
+The Barzilai-Borwein (BB) method is a popular and efficient tool for solving large-scale unconstrained optimization problems \cite{raydan1997barzilai}. Its search direction is the same as for the steepest descent method, but its stepsize rule is different. Owing to this, it converges much faster than the steepest descent method \cite{burdakov2019stabilized}. The full implement process is showed in algorithm \ref{alg:BB method} as follows.
+
+\begin{algorithm}[H]
+  \caption{Barzilai and Borwein Gradient Method}
+  \label{alg:BB method}
+  \begin{algorithmic}[1]
+  \REQUIRE
+Initial point $x^{0},0<\varepsilon \ll 1 $ \\
+  \STATE For $k=0,1, \ldots$ \\
+  \STATE If $\left\|\nabla f\left(x^{k}\right)\right\| \leq \varepsilon,$ stop ; otherwise let $d_{k}=-\nabla f\left(x^{k}\right)$. \\
+  \STATE If $k=0,$ find $\alpha_{0}$ by line search; otherwise compute $\alpha_{k}$ by 
+  $
+  \alpha_{k}=\frac{s_{k-1}^{T} y_{k-1}}{y_{k-1}^{T} y_{k-1}}
+  $
+  where $s_{k-1}=x_{k}-x_{k-1}, y_{k-1}=\nabla f\left(x^{k}\right)-\nabla f\left(x^{k-1}\right)$. \\
+  \STATE Set $x_{k+1}=x_{k}+\alpha_{k} d_{k}$ \\
+  \STATE $k:=k+1$, return to Step 1 \\
+  \end{algorithmic}
+\end{algorithm}
+
+The compact representation of the quasi-Newton updating matrix is derived to the use in the form of limited memory update in
+which the vector is replaced by a modified vector so that more available information about the function can be
+employed to increase the accuracy of Hessian approximations. The global convergence of the proposed method is proved.
+
+\section{Experiment Analysis}
+In this part, we will implement several unconstrained and constrained optimization alogorithms to solve minimum surfaces and obstacle problems respectively. More specificly, we will employ 3 basic unconstrained optimization algorithms (gradient descent method with backtracking, globalized Newton method, L- BFGS method) with 5 different boundary functions in the minimum surface problems. We will also consider how the discretization degree and addtional techniques influence our experimental results. For the obstacle problem, we will apply two constrained optimization algorithms (quadratic penalty method and projected gradient method) in combination with different obstacle functions. And meanwhile, we will analyze the perfomance of different implemented algorithms and discuss some potential improvements.
+\subsection{Minimum Surfaces}
+At first, we will illustrate five different boundary functions. Then we will choose one advanced algorithm to solve the minimum surface problem with five boundary functions and different discretization degree. Subsequently, we utilize other unconstrained optimization alogorithms and compare their perfomance from the perspective of relative objective function gap and iteration of norm of gradients. Finally, additional techniques such as exact line search, Barzilai-Borwein
+steps and inertial techniques will be introduced to accelerate the convergence process.
+\subsubsection{Boundary Functions}
+\subsubsection{Minimum Surface Results}
+\subsubsection{Perfomance Analysis}
+\subsubsection{Additional Techniques}
+\subsection{Obstacle Problems}
+As presented similarly in section 4.1, we firstly show different obstacles in the defiend boundary set via stochastic generation methods. We then choose projected gradient method to tackle the constrained optimization problem with different obstacle problems and illustrate corresponding minimum surface results. We will equally present the perfomance camparing these two proposed algorithms. Lastly, additional techniques will also be implemented. 
+\subsubsection{Different Obstacles}
+\subsubsection{Minimum Surface Results}
+\subsubsection{Perfomance Analysis}
+\subsubsection{Additional Techniques}
+
+
+\section{Discussion}
+\subsection{Main Experimental Observations}
+\subsection{Extensions and Applications}
+
+
+\section{Conclusion}
+\bibliographystyle{unsrt}
+\bibliography{refs}
+\end{document}
