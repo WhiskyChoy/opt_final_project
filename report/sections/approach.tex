@@ -55,7 +55,7 @@ where $\alpha_{k}$ can be determined after finitely many steps if $d^{k}$ is a d
  \end{algorithm}
  
 \subsection{Constrained Optimization Algorithms}
-The penalty method is a classical approach for constrained optimization problem where the unconstrained problem are built by adding penalty terms for the constraints to the objective function. It proves that the larger the penalty parameter $alpha$, the better we will approximate the initial constrained problem. However, the numerical performance of the penalty subproblems becomes worse with larger penalty parameter. In each iteration, we can apply typical unconstrained optimization method to solve this problem, as illustrated in algorithm \ref{alg:Penalty}.
+The penalty method is a classical approach for constrained optimization problem where the unconstrained problem are built by adding penalty terms for the constraints to the objective function. It proves that the larger the penalty parameter $\alpha$, the better we will approximate the initial constrained problem. However, the numerical performance of the penalty subproblems becomes worse with larger penalty parameter. In each iteration, we can apply typical unconstrained optimization method to solve this problem, as illustrated in algorithm \ref{alg:Penalty}.
 \begin{algorithm}[H]
   \caption{Quadratic Penalty Method}
   \label{alg:Penalty}
