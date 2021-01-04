@@ -43,7 +43,38 @@ In order to solve the problem numerically, we utilize a discretized triangulatin
 In this case, we follow the process of trianglation and our objective is transformed to find a function  $q: \operatorname{cl} \Omega \rightarrow \mathbb{R}$ via solving a minimization problem in the finite discretized approximation scheme. As shown in figure 1, we first assume that $\Omega=\left(a_{1}, b_{1}\right) \times\left(a_{2}, b_{2}\right)$ has a simple rectangular shape with $a_{1}<b_{1}, a_{2}<b_{2},$ and $a_{i}, b_{i} \in \mathbb{R}, i \in\{1,2\} .$ And then generate a regular grid with $m \cdot n$ nodes $t_{11}, \ldots, t_{1 n}, t_{21}, \ldots, t_{(m-1) n}, t_{m 1}, \ldots, t_{m n} \in \mathbb{R}^{2}$
 covering the set cl $\Omega$ while three neighboring nodes can form one of the triangles $T_{k} .$ Using a triangulation $\operatorname{cl} \Omega=\bigcup_{k=1}^{\kappa} T_{k}$, we then approximate and discretize $\operatorname{cl} \Omega$.
 
-In particular, we set $\Omega=(0,1) \times(0,1) \in \mathbb R^{2}$ and $\Gamma=\partial \Omega$. Using triangulation, the set $\operatorname{cl} \Omega$ is discretized to $2 n^{2}$ triangles, with each point $t_{i, j}=\left(\frac{i}{n}, \frac{j}{n}\right), i=0,1, \ldots, n, j=0,1, \ldots, n .$ Our piecewise linear function $q_{T}: \mathrm{cl} \Omega \rightarrow \mathbb{R}$ is uniquely characterized by its node values:
+\begin{figure}[!htbp]
+    \centering
+    \subfigure[$ r_1(x, y)=1+\sin (2 \pi x)$]
+    {
+    \centering
+    \includegraphics[width=0.3\columnwidth]{images/boundary_1.png}
+    }
+    \subfigure[$ r_2(x, y)=1+\cos (1 / (x+0.001) )$]
+    {
+    \centering
+    \includegraphics[width=0.3\columnwidth]{images/boundary_2.png}
+    }
+    \subfigure[$ r_3(x, y)=\frac{1}{2}-\left|y-\frac{1}{2}\right|$]
+    {
+    \centering
+    \includegraphics[width=0.3\columnwidth]{images/boundary_3.png}
+    }
+    \subfigure[$ r_4(x, y)=(1+\exp (x y))^{-1}$]
+    {
+    \centering
+    \includegraphics[width=0.3\columnwidth]{images/boundary_4.png}
+    }
+    \subfigure[$ r_5(x, y)=1+\arcsin (-1+2 \sqrt{x y})$]
+    {
+    \centering
+    \includegraphics[width=0.3\columnwidth]{images/boundary_5.png}
+    }
+    \caption{Five Boundaries in the Minimal Surface Problem}
+    \label{fig:boundary}  
+\end{figure}
+
+In particular, we set $\Omega=(0,1) \times(0,1) \in \mathbb R^{2}$ and $\Gamma=\partial \Omega$. Therefore, we will have $m=n$. Using triangulation, the set $\operatorname{cl} \Omega$ is discretized to $2 n^{2}$ triangles, with each point $t_{i, j}=\left(\frac{i}{n}, \frac{j}{n}\right), i=0,1, \ldots, n, j=0,1, \ldots, n .$ Our piecewise linear function $q_{T}: \mathrm{cl} \Omega \rightarrow \mathbb{R}$ is uniquely characterized by its node values:
 
 \begin{equation}
     q_{T}\left(t_{i j}\right)=x_{i, j} \quad \forall i, j=0, \ldots, n
@@ -55,7 +86,7 @@ along the boundary $\Gamma$, we have
 q_{T}\left(t_{i j}\right)=x_{i j}=r\left(t_{i j}\right) \quad \forall t_{i j} \in \Gamma
 \end{equation}
 
-It's clear that $q_{T}$ builds a mapping from the set $\Omega$ to $\mathbb{R},$ which is an approximation of the two-dimensional surface.
+Some examples of the boundary are shown in Figure \ref{fig:boundary}. Note that in the following experiment we will also use such five boundaries and the expression of the boundary functions are listed in the captions. It's clear that $q_{T}$ builds a mapping from the set $\Omega$ to $\mathbb{R},$ which is an approximation of the two-dimensional surface.
 Therofore, our goal is to determine these $X$ such that the surface area of these triangles on cl $\Omega$ has minimum value.Thus, the full optimization problems is given as below:
 
 \begin{equation}
