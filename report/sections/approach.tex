@@ -88,7 +88,7 @@ algorithm \ref{alg:Projected}.
 
 
 \subsection{Addtional Techniques}
-In our experiment, we will explore four additional techniques (nonmonotone line search procedures, Barzilai-Borwein steps, inertial techniques and momentum, compact representation of the L-BFGS update) to adjust and potentially accelerate our proposed gradient descent algorithm. 
+In our experiment, we will explore three additional techniques (nonmonotone line search procedures, Barzilai-Borwein steps, inertial techniques and momentum) to adjust and potentially accelerate our proposed gradient descent algorithm. 
 
 Exact line search is proposed to modify the steps when comparing with gradient method with backtracking. Generally, it's expected to have better performance but with poor operation time. It can be formulated as $\alpha_{k}=\operatorname{argmin}_{\alpha \geq 0} f\left(x^{k}+\alpha d^{k}\right)$ to choose $\alpha_{k}$ to achieve the largest descent. 
 
@@ -121,7 +121,7 @@ Initial point $x^{0},0<\varepsilon \ll 1 $ \\
   \end{algorithmic}
 \end{algorithm}
 
-As indicated in \cite{yueting2007compact}, the compact form of L-BFGS is more efficient to adapt for sparse cases. Moreover, the compact form has an analog for the direct update. The compact representation of the quasi-Newton updating matrix is derived to the use in the form of limited memory update in which the vector is replaced by a modified vector so that more available information about the function can be employed to increase the accuracy of Hessian approximations. The global convergence of the proposed method is also proved in \cite{yueting2007compact}. It’s expected that the compact form of the L-BFGS can provide a new model for solving more kinds of large scale optimization. 
+
 
 
 

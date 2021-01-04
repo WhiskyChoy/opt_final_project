@@ -1,7 +1,9 @@
 \section{Discussion}
 \subsection{Main Experimental Observations}
 \subsection{Extensions and Applications}
-For the existing problems in this project, we may consider more advance and sufficient algorithms to solve the defined minimum surfaces and obstacle problems, such as applying augmented-lagrange method to modify the performance of penalty parameter and Alternating Direction Method of Multiplier (ADMM) where alternate minimization are utilized to decouple sets of variables that are coupled within the augmented Lagrangian.
+As indicated in \cite{yueting2007compact}, the compact form of L-BFGS is more efficient to adapt for sparse cases. Moreover, the compact form has an analog for the direct update. The compact representation of the quasi-Newton updating matrix is derived to the use in the form of limited memory update in which the vector is replaced by a modified vector so that more available information about the function can be employed to increase the accuracy of Hessian approximations. The global convergence of the proposed method is also proved in \cite{yueting2007compact}. It’s expected that the compact form of the L-BFGS can provide a new model for solving more kinds of large scale optimization. 
+
+Besides, for the existing problems in this project, we may consider more advance and sufficient algorithms to solve the defined minimum surfaces and obstacle problems, such as applying augmented-lagrange method to modify the performance of penalty parameter and Alternating Direction Method of Multiplier (ADMM) where alternate minimization are utilized to decouple sets of variables that are coupled within the augmented Lagrangian.
 
 We can also extand our problems to a more common case. For instance, we assume that obstacle can move freely within the target set and determine what is the maxmimum minimal area. This general problem can be solved by 
 sequential quadratic programming. In \cite{caffarelli2016obstacle}, the authors also discuss the regularity of the solution and of the free boundary for certain obstacle type problems involving classical minimal surfaces and nonlocal minimal surfaces, which can be further investigated.
