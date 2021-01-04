@@ -1,12 +1,15 @@
 \section{Introduction}
 The minimum surfaces and obstacle problems aim to generate a two dimensional surface of minimal area with a given closed curve in $\mathbb R^{3}$ as boundary \cite{dolan2004benchmarking}. It's regarded as a classic motivating example in the mathematical area of variational inequalities and free boundary problems, and widely applided to the domain of physics, biology, financial mathematics and optimal control \cite{zosso2017efficient,ros2018obstacle,caffarelli1998obstacle}. In \cite{ros2018obstacle}, the author classisifies the obstacle problems with free boundary into three categories: classical obstacle problem, the thin obstacle problem and obstacle problems for integro-differential operators. Meanwhile, he describles comprehensively the classical regularity theory for the defined obstacle problem and with its applications in such areas. In recent years, some efficent and advanced methodologies, such as sequencial quadratic programming \cite{liu2009solution}, primal-dual method \cite{zosso2017efficient} and PDE accelerations \cite{calder2019pde} have been proposed to solve these obstacle problems. The classical formulation can be represented as follows. Suppose that the surface can be showed in nonparametric form $z:\mathbb R^{2} \rightarrow$ $\mathbb R,$ and the requirement is $z \geq z_{L}$ for some obstacle $z_{L} .$ The solution of this obstacle problem minimizes the function $f: K \rightarrow \mathbb R$
-$$
-f(z)=\int_{D} \sqrt{1+\|\nabla z(x)\|^{2}} d x \eqno(1)
-$$
+\begin{equation}
+    f(z)=\int_{D} \sqrt{1+\|\nabla z(x)\|^{2}} d x
+\end{equation}
+
 over the convex set
-$$
-K=\left\{z \in H^{1}(D) \mid z(x)=z_{D}(x) \text { for } x \in \partial D, z(x) \geq z_{L}(x) \text { for } x \in D\right\}  \eqno(2)
-$$
+
+\begin{equation}
+K=\left\{z \in H^{1}(D) \mid z(x)=z_{D}(x) \text { for } x \in \partial D, z(x) \geq z_{L}(x) \text { for } x \in D\right\}
+\end{equation}
+
 where $\|\bullet\|$ represents the Euclidean norm, $H^{1}(D)$ is the space of functions with gradients in $L^{2}(D) .$ The function $z_{D}: \partial D \rightarrow \mathbb R$ defines the boundary data, and $z_{L}:D \rightarrow \mathbb R$ is the obstacle. We assume that $z_{L} \leq z_{D}$ on the boundary $\partial D$.
 
 In this project, we first construct a unconstrined optimization problem by only considering minimal surface problems for a special issue. Subsequently, obstacle constraints will be introduced to complete the whole model formulation. Several effective unconstrained and constrained algorithms will also be implemented to test the perfomance for different defined problems. We then summarize and conclude our main results and observations for these experiments. 
