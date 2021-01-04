@@ -7,7 +7,7 @@ from random import random
 from utils import ObstacleGenerator, draw_multiple_g_norm_iter, draw_multiple_solved_gap_iter, draw_multiple_solved_gap_cpu, draw_multiple_g_norm_cpu, draw_boundary_only
 
 # set the scale of our problem
-n_arr = [5, 7, 9]
+n_arr = [5, 7, 9,13,15,18]
 
 # define all r functions
 
@@ -164,6 +164,16 @@ def exp_7():
     for solver in unconstraint_solver_arr:
         solver.show_summary()
         solver.draw_3d(colorful=True)
+
+def exp_4():
+    problem_auto_grad = MyProblem.MSAutoGradProblem(18, r_2)
+    init_vars = np.random.rand(problem_auto_grad.dim)
+    solver_1.solve(problem_auto_grad, init_vars, show_process=False)
+    solver_1.show_summary()
+    solver_1.draw_solved_gap()
+    solver_1.draw_g_norm()
+    solver_1.draw_3d()
+
 
 exp_arr = [exp_1]
 
