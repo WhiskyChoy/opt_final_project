@@ -39,7 +39,26 @@ In order to demonstrate how the boundary function and discretization degree infl
 
 Comparing the corresponding subfigures between figure \ref{fig:boundary} and figure \ref{fig:min_surf_boundaries}, we can intuitively find out how the minimum surface come into shape. In order to control convariate, we choose $n=9$ and then generate the minimum surfaces under different boundaries. 
 
-The minimal surface area depends on the number of the grid points. Figure \ref{fig:min_surf_discretization} shows how the discretization degree affect the formulation of minimum surface. It can be seen that the minim
+The minimal surface area depends on the number of the grid points. Figure \ref{fig:min_surf_discretization} shows how the discretization degree affect the formulation of minimum surface. It can be seen that the minimum surface becomes more and more smooth with larger discretization degree. As represented in table \ref{tab:per_vs_dis}, with the increase of the number of grid points, the minimal area is decreasing on the whole. With reference to the principle of calculus, we know the approximate error will be reduced with more grid points.In addition, with the increase of the number of discretization degree, the number of the variable is increasing, so the computation becomes slower and the iteration number also increases. 
+
+
+
+\begin{table}[!ht]
+    \caption{Perfomance Analysis with Different Discretization Degree}\label{tab:per_vs_dis}
+    \begin{tabular*}{\hsize}{@{}@{\extracolsep{\fill}}cccc@{}}
+    \toprule
+             &Iteration number  &Final objective function  &Cost time(s)  \\
+    \midrule
+    $n=5$   &6   &2.4897  &0.371  \\
+    $n=7$   &5   &2.4514  &0.752  \\
+    $n=9$   &11  &2.4359  &2.855  \\
+    $n=13$  &12  &2.4237  &7.152  \\
+    $n=15$  &13  &2.4210  &10.868 \\
+    $n=18$  &15  &2.4140  &18.741 \\
+    \bottomrule
+    \end{tabular*}
+\end{table}
+
 \begin{figure}[!htbp]
     \centering
     \subfigure[$ r_1(x, y)=1+\sin (2 \pi x)$]
@@ -73,32 +92,32 @@ The minimal surface area depends on the number of the grid points. Figure \ref{f
 
 \begin{figure}[!htbp]
     \centering
-    \subfigure[$ r_2(x, y)$ with n=5]
+    \subfigure[$ r_2(x, y)$ with $n=5$]
     {
     \centering
     \includegraphics[width=0.3\columnwidth]{images/simple/min_surf_n5.png}
     }
-    \subfigure[$ r_2(x, y)$ with n=7]
+    \subfigure[$ r_2(x, y)$ with $n=7$]
     {
     \centering
     \includegraphics[width=0.3\columnwidth]{images/simple/min_surf_n7.png}
     }
-    \subfigure[$ r_2(x, y)$ with n=9]
+    \subfigure[$ r_2(x, y)$ with $n=9$]
     {
     \centering
     \includegraphics[width=0.3\columnwidth]{images/simple/min_surf_n9.png}
     }
-    \subfigure[$ r_2(x, y)$ with n=13]
+    \subfigure[$ r_2(x, y)$ with $n=13$]
     {
     \centering
     \includegraphics[width=0.3\columnwidth]{images/simple/min_surf_n13.png}
     }
-    \subfigure[$ r_2(x, y)$ with n=15]
+    \subfigure[$ r_2(x, y)$ with $n=15$]
     {
     \centering
     \includegraphics[width=0.3\columnwidth]{images/simple/min_surf_n15.png}
     }
-    \subfigure[$ r_2(x, y)$ with n=18]
+    \subfigure[$ r_2(x, y)$ with $n=18$]
     {
     \centering
     \includegraphics[width=0.3\columnwidth]{images/simple/min_surf_n18.png}
@@ -107,7 +126,45 @@ The minimal surface area depends on the number of the grid points. Figure \ref{f
     \label{fig:min_surf_discretization}  
 \end{figure}
 \subsubsection{Perfomance Analysis}
+
+In this section, we will compare the performance of the basic gradient descent method with backtracking, globalized newton method and the L-BFGS method. As we will introduce the overall performance comparison in next section, we mainly focus on the experimental results of these alogorithms via considering different discretization degree and initial points. Here, we set the boundary function $r(x, y)=\frac{1}{2}-\left|y-\frac{1}{2}\right|$.
+\begin{figure}[!htbp]
+    \centering
+    \subfigure[$ r_2(x, y)$ with $n=5$]
+    {
+    \centering
+    \includegraphics[width=0.3\columnwidth]{images/n_7_r_abs_ini_2/min_surf_n5.png}
+    }
+    \subfigure[$ r_2(x, y)$ with $n=7$]
+    {
+    \centering
+    \includegraphics[width=0.3\columnwidth]{images/simple/min_surf_n7.png}
+    }
+    \subfigure[$ r_2(x, y)$ with $n=9$]
+    {
+    \centering
+    \includegraphics[width=0.3\columnwidth]{images/simple/min_surf_n9.png}
+    }
+    \subfigure[$ r_2(x, y)$ with $n=13$]
+    {
+    \centering
+    \includegraphics[width=0.3\columnwidth]{images/simple/min_surf_n13.png}
+    }
+    \subfigure[$ r_2(x, y)$ with $n=15$]
+    {
+    \centering
+    \includegraphics[width=0.3\columnwidth]{images/simple/min_surf_n15.png}
+    }
+    \subfigure[$ r_2(x, y)$ with $n=18$]
+    {
+    \centering
+    \includegraphics[width=0.3\columnwidth]{images/simple/min_surf_n18.png}
+    }
+    \caption{Minimum Surface Results with different discretization degree}
+    \label{fig:min_surf_discretization}  
+\end{figure}
 \subsubsection{Additional Techniques}
+In this part, we consider two more addtional techniques () to make comparison by the following two One of the performance measures is to compare the relative objective function gap $\left|f\left(X^{k}\right)-f^{*}\right| / \max \left\{1,\left|f^{*}\right|\right\}$ with respect to the number of iterations and elapsed cpu-time. (Here $f^{*}$ denotes the optimal objective value obtained by each algorithm). Another
 \subsection{Obstacle Problems}
 As presented similarly in section 4.1, we firstly show different obstacles in the defiend boundary set via stochastic generation methods. We then choose projected gradient method to tackle the constrained optimization problem with different obstacle problems and illustrate corresponding minimum surface results. Lastly, We will equally present the perfomance camparing these two proposed algorithms. 
 \subsubsection{Different Obstacles}
