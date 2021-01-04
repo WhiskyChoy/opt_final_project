@@ -7,7 +7,7 @@ from random import random
 from utils import ObstacleGenerator
 
 # set the scale of our problem
-n_arr = [5, 7, 9]
+n_arr = [5, 7, 9,13,15,18]
 
 # define all r functions
 
@@ -85,7 +85,7 @@ def exp_3():
     solver_7.draw_3d()
 
 def exp_4():
-    problem_auto_grad = MyProblem.MSAutoGradProblem(9, r_0)
+    problem_auto_grad = MyProblem.MSAutoGradProblem(18, r_2)
     init_vars = np.random.rand(problem_auto_grad.dim)
     solver_1.solve(problem_auto_grad, init_vars, show_process=False)
     solver_1.show_summary()
@@ -93,7 +93,7 @@ def exp_4():
     solver_1.draw_g_norm()
     solver_1.draw_3d()
 
-    
+
 exp_arr = [exp_1]
 
 
