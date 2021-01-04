@@ -1,12 +1,12 @@
 \section{Approach}
-In this part, we will employ several unconstrained and constraints algorithms for 
-
-
-
-
-
+In this part, we will employ several unconstrained and constrained algorithms for solving minimum surface and obstacle problems while we also introduce four acceleration techniques to enhance our experiment results and performance.
 
 \subsection{Unconstrained Optimization Algorithms}
+The gradient descent method with backtracking is the most common and basic algorithm to solve unconstrained optimization problem. The full gradient method is showed in algorithm \ref{alg:Gradient}. The step size in every iteration should satisfy the Amrijo Condition:
+$$
+f\left(x^{k}+\alpha_{k} d^{k}\right)-f\left(x^{k}\right) \leq \gamma \alpha_{k} \cdot \nabla f\left(x^{k}\right)^{\top} d^{k}
+$$
+where $\alpha_{k}$ can be determined after finitely many steps if $d^{k}$ is a descent direction.
 \begin{algorithm}[H]
   \caption{Gradient Descent Method (with Backtracking)}
   \label{alg:Gradient}
@@ -21,6 +21,7 @@ In this part, we will employ several unconstrained and constraints algorithms fo
  \end{algorithmic}
  \end{algorithm} 
  
+ Globalized newton method have better convergence performance compared with pure newton method, as represented in algorithm \ref{alg:Newton}. It shows that the whole sequence $\left(x^{k}\right)_{k}$ converges q-superlinearly to $x^{*}$. In particular, if $\nabla^{2} f$ is Lipschitz continuous in a neighborhood of $x^{*}$, the rate of convergence is q-quadratic. 
  \begin{algorithm}[H]
    \caption{Globalized Newton Method}
    \label{alg:Newton}
@@ -37,9 +38,7 @@ In this part, we will employ several unconstrained and constraints algorithms fo
   \end{algorithmic}
   \end{algorithm} 
  
- 
- 
- 
+  Since the BFGS update is widely used to solve general nonlinear minimization problems, the most of studies on limited memory methods are concentrate on the limited memory BFGS (L-BFGS) method \cite{zhang1999new}, which has better performance, showed in algorithm \ref{alg:L-BFGS} as below.
  
  \begin{algorithm}[H]
    \caption{L-BFGS Method}
@@ -56,7 +55,7 @@ In this part, we will employ several unconstrained and constraints algorithms fo
  \end{algorithm}
  
 \subsection{Constrained Optimization Algorithms}
-
+The penalty method is a classical approach for constrained optimization problem where the unconstrained problem are built by adding penalty terms for the constraints to the objective function. It proves that the larger the penalty parameter $alpha$, the better we will approximate the initial constrained problem. However, the numerical performance of the penalty subproblems becomes worse with larger penalty parameter. In each iteration, we can apply typical unconstrained optimization method to solve this problem, as illustrated in algorithm \ref{alg:Penalty}.
 \begin{algorithm}[H]
   \caption{Quadratic Penalty Method}
   \label{alg:Penalty}
@@ -69,11 +68,8 @@ In this part, we will employ several unconstrained and constraints algorithms fo
  \end{algorithmic}
  \end{algorithm} 
 
-
-
-
-
-
+The projected gradient method is similar to the gradient descent method where we introduce the projection operator to guarantee the optimal solution belonging to the feasible sets. The full process can be seen in 
+algorithm \ref{alg:Projected}.
  \begin{algorithm}[H]
   \caption{Projected Gradient Method}
   \label{alg:Projected}
@@ -92,9 +88,19 @@ In this part, we will employ several unconstrained and constraints algorithms fo
 
 
 \subsection{Addtional Techniques}
-In our experiment, we will explore four additional techniques (nonmonotone line search procedures, Barzilai-Borwein
-steps, inertial techniques and momentum, compact representation of the L-BFGS update) to adjust and potentially accelerate our proposed  algorithm. 
-Exact line search 
+In our experiment, we will explore four additional techniques (nonmonotone line search procedures, Barzilai-Borwein steps, inertial techniques and momentum, compact representation of the L-BFGS update) to adjust and potentially accelerate our proposed gradient descent algorithm. 
+
+Exact line search is proposed to modify the steps when comparing with gradient method with backtracking. Generally, it's expected to have better performance but with poor operation time. It can be formulated as $\alpha_{k}=\operatorname{argmin}_{\alpha \geq 0} f\left(x^{k}+\alpha d^{k}\right)$ to choose $\alpha_{k}$ to achieve the largest descent. 
+
+Inertial techniques and momentum method that are similar to Nesterov’s acceleration behave well to improve the convergence performance. The extrapolation step can be represented as $$
+y^{k+1}=x^{k}+\beta_{k}\left(x^{k}-x^{k-1}\right), \quad \beta_{k}>0
+$$
+The new iterate $x^{k+1}$ is updated as follows:
+$$
+x^{k+1}=y^{k+1}-\alpha_{k} \nabla f\left(x^{k}\right)=x^{k}-\alpha_{k} \nabla f\left(x^{k}\right)+\beta_{k}\left(x^{k}-x^{k-1}\right)
+$$
+where $\alpha_{k}$ is a suitable step size and the gradient is now evaluated at $x^{k}$ and not at $y^{k+1} $.
+
 The Barzilai-Borwein (BB) method is a popular and efficient tool for solving large-scale unconstrained optimization problems \cite{raydan1997barzilai}. Its search direction is the same as for the steepest descent method, but its stepsize rule is different. Owing to this, it converges much faster than the steepest descent method \cite{burdakov2019stabilized}. The full implement process is showed in algorithm \ref{alg:BB method} as follows.
 
 \begin{algorithm}[H]
@@ -115,10 +121,7 @@ Initial point $x^{0},0<\varepsilon \ll 1 $ \\
   \end{algorithmic}
 \end{algorithm}
 
-The compact representation of the quasi-Newton updating matrix is derived to the use in the form of limited memory update in
-which the vector is replaced by a modified vector so that more available information about the function can be
-employed to increase the accuracy of Hessian approximations. The global convergence of the proposed method is proved.
-
+As indicated in \cite{yueting2007compact}, the compact form of L-BFGS is more efficient to adapt for sparse cases. Moreover, the compact form has an analog for the direct update. The compact representation of the quasi-Newton updating matrix is derived to the use in the form of limited memory update in which the vector is replaced by a modified vector so that more available information about the function can be employed to increase the accuracy of Hessian approximations. The global convergence of the proposed method is also proved in \cite{yueting2007compact}. It’s expected that the compact form of the L-BFGS can provide a new model for solving more kinds of large scale optimization. 
 
 
 
