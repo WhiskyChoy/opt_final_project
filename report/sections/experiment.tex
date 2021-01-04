@@ -36,6 +36,10 @@ Here, figure \ref{fig:boundary} presents five different boundary function mentio
 \end{figure}
 \subsubsection{Minimum Surface Results}
 In order to demonstrate how the boundary function and discretization degree influence the minimal surface area, we choose globalized newton method to test these effects.
+
+Comparing the corresponding subfigures between figure \ref{fig:boundary} and figure \ref{fig:min_surf_boundaries}, we can intuitively find out how the minimum surface come into shape. In order to control convariate, we choose $n=9$ and then generate the minimum surfaces under different boundaries. 
+
+The minimal surface area depends on the number of the grid points. Figure \ref{fig:min_surf_discretization} shows how the discretization degree affect the formulation of minimum surface. It can be seen that the minim
 \begin{figure}[!htbp]
     \centering
     \subfigure[$ r_1(x, y)=1+\sin (2 \pi x)$]
@@ -63,7 +67,7 @@ In order to demonstrate how the boundary function and discretization degree infl
     \centering
     \includegraphics[width=0.3\columnwidth]{images/simple/min_surf_r4.png}
     }
-    \caption{Minimum Surface Results with Five boundaries (n=9)}
+    \caption{Minimum Surface Results with Five boundaries ($n=9$)}
     \label{fig:min_surf_boundaries}  
 \end{figure}
 
