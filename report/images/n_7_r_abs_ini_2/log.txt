@@ -1,0 +1,33 @@
+Solver Name: Gradient Armijo
+The iteration number is: 77
+The final objective function value is: 2.45137
+The final norm of the gradient is: 0.00083
+Cost time: 0.264 seconds
+
+No handles with labels found to put in legend.
+Solver Name: Globalized Newton
+The iteration number is: 5
+The final objective function value is: 2.45137
+The final norm of the gradient is: 0.00013
+Cost time: 0.022 seconds
+
+No handles with labels found to put in legend.
+Solver Name: L-BFGS
+The iteration number is: 19
+The final objective function value is: 2.45137
+The final norm of the gradient is: 0.00061
+Cost time: 0.076 seconds
+
+No handles with labels found to put in legend.
+Solver Name: Exactline Search
+The iteration number is: 182
+The final objective function value is: 2.45137
+The final norm of the gradient is: 0.00093
+Cost time: 0.233 seconds
+
+No handles with labels found to put in legend.
+Solver Name: Barzilai Borwein
+The iteration number is: 33
+The final objective function value is: 2.45137
+The final norm of the gradient is: 0.00011
+Cost time: 0.063 seconds

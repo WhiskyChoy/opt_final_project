@@ -1,0 +1,5 @@
+Solver Name: Gradient Armijo
+The iteration number is: 509
+The final objective function value is: 6.21334
+The final norm of the gradient is: 0.68221
+Cost time: 12.534 seconds

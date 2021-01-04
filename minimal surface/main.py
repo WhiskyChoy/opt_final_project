@@ -167,9 +167,11 @@ def exp_7():
         solver.draw_3d(colorful=True)
 
 def exp_8():
-    n = 23
-    obstacle = get_cie_arr(1)
-    problem = MyProblem.MSSymbolicEvalProblem(n, r_2, obstacle=obstacle, need_hessian=False)
+    n = 15
+    obstacle_generator = ObstacleGenerator(n-2)
+    obstacle_generator.add_unit_rect()
+    obstacle_generator.add_point()
+    problem = MyProblem.MSSymbolicEvalProblem(n, r_0, obstacle=obstacle_generator.obstacle, need_hessian=False)
     init_vars = np.ones(problem.dim) * 2
     solver_2_2.solve(problem, init_vars, show_process=True)
     solver_2_2.draw_3d()
