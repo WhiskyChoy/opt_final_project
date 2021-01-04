@@ -4,7 +4,8 @@ import MyProblem
 import MySolver
 from math import pi, sin, exp, cos, sqrt, asin
 from random import random
-from utils import ObstacleGenerator, draw_multiple_g_norm_iter, draw_multiple_solved_gap_iter, draw_multiple_solved_gap_cpu, draw_multiple_g_norm_cpu, draw_boundary_only
+from utils import ObstacleGenerator, draw_multiple_g_norm_iter, draw_multiple_solved_gap_iter, draw_multiple_solved_gap_cpu, draw_multiple_g_norm_cpu, draw_boundary_only, get_cie_arr
+import cv2
 
 # set the scale of our problem
 n_arr = [5, 7, 9,13,15,18]
@@ -165,15 +166,14 @@ def exp_7():
         solver.show_summary()
         solver.draw_3d(colorful=True)
 
-def exp_4():
-    problem_auto_grad = MyProblem.MSAutoGradProblem(18, r_2)
-    init_vars = np.random.rand(problem_auto_grad.dim)
-    solver_1.solve(problem_auto_grad, init_vars, show_process=False)
-    solver_1.show_summary()
-    solver_1.draw_solved_gap()
-    solver_1.draw_g_norm()
-    solver_1.draw_3d()
-
+def exp_8():
+    n = 23
+    obstacle = get_cie_arr(1)
+    problem = MyProblem.MSSymbolicEvalProblem(n, r_2, obstacle=obstacle, need_hessian=False)
+    init_vars = np.ones(problem.dim) * 2
+    solver_2_2.solve(problem, init_vars, show_process=True)
+    solver_2_2.draw_3d()
+    solver_2_2.show_summary()
 
 exp_arr = [exp_1]
 
@@ -189,4 +189,5 @@ if __name__ == '__main__':
     # draw_boundary_only(r_np_1)
     # draw_boundary_only(r_np_2)
     # draw_boundary_only(r_np_3)
-    draw_boundary_only(r_np_4)
+    # draw_boundary_only(r_np_4)
+    exp_8()

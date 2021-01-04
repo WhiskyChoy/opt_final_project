@@ -7,6 +7,16 @@ import numpy as np
 from colorsys import hsv_to_rgb
 from math import sqrt
 from random import randint, uniform
+import cv2
+
+def get_cie_arr(height: int)->np.ndarray:
+    img = cv2.imread("cie.png", cv2.THRESH_BINARY)
+    arr = np.zeros([21, 21])
+    for i in range(21):
+        for j in range(21):
+            if img[i][j] == 0:
+                arr[i][j] = height
+    return arr
 
 def draw_multiple_solved_gap_iter(solvers:list, log_x=False, log_y=False)->None:
     for solver in solvers:
