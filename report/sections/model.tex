@@ -19,6 +19,19 @@ The minimum surface problem could be further extended into obstacle problems, wh
 
 
 \subsection{Model Formulation}
+The process of solving the original problem is acutually finding an optimal solution in a function space, that is, we are trying to find $f: R^3 \rightarrow 0 $. If we find such function in a function space, we need to utilize $f_{x,y,z} = \mathop{\arg\min}_{f} \iint_{S} f(x,y,z) ds$, where $x,y,z \in R$ and $z=z(x,y)$. There are some constraints described above. This is a very hard process since the space we are searching in is the \textbf{function space} rather than the \textbf{numerical space}. In order to simplify the solving process, we can use the technique of \textbf{parameterization}. This is acutually a \textbf{generalized explanation} for the \textbf{discretization approach} given by the project requirement.
+
+One common way to parameterization is to discretize the surface. We can use gridding to discretize the the input of $z_{x,y}$, that is, we use $(i,j) \in Z \times Z$ to represent $(x,y) \in R \times R$ and use parameter $\theta_{i,j}$ to represent the surface $f_{x,y,z}$. Correspondingly, the area $\iint_{S} f(x,y,z) ds$ can be represent as the area of rectangles in the $R^3$ space by rectangular tessellation or that of triangles by triangular tessellation. An example of triangular tessellation is shown on Figure \ref{fig:discretization}.
+
+\begin{figure}[!htbp]
+    \centering
+      \includegraphics[width=10cm]{images/discretization.pdf}
+      \caption{An Example of Parameterization by Discretization \\ (Copied from CIE6010 Lecture 1, by Prof. Andre Milzarek)}
+      \label{fig:discretization}
+\end{figure}
+
+We can see that if we switch $\theta_{i,j}$ to $x_{i,j}$, we will exactly have the same expression of the total area:
+
 \subsubsection{Minimum Surfaces}
 In order to solve the problem numerically, we utilize a discretized triangulating scheme to express the problem as a minimization task over the space of piecewise linear functions. In \cite{shen1992finite}, the linear finite dimensional approximation for the minimal surface with obstacle is analyzed while the existence and uniqueness of the solution for the discrete problem are shown, and meanwhile the error estimate of the approximation methodology is also obtained. 
 
