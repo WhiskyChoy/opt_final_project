@@ -66,6 +66,8 @@ Since $A_{ij}(X)$ is the summation of the area of triangles, and for a point $\h
     \frac{\mathrm{d}}{\mathrm{d}x_k}A_k = \frac{\mathrm{d}}{\mathrm{d}x_k}A_{nbr(k)[0]} + \frac{\mathrm{d}}{\mathrm{d}x_k}A_{nbr(k)[1]} + \frac{\mathrm{d}}{\mathrm{d}x_k}A_{nbr(k)[2]} + \frac{\mathrm{d}}{\mathrm{d}x_k}A_{nbr(k)[3]} + \frac{\mathrm{d}}{\mathrm{d}x_k}A_{nbr(k)[4]} + \frac{\mathrm{d}}{\mathrm{d}x_k}A_{nbr(k)[5]} 
 \end{equation}
 
+Through a similar process, we could tell the the hessian matrix will be very \textbf{sparse}. If we don't consider the boundary, there would be at most seven items each row that is not zero.
+
 \subsubsection{Minimum Surfaces}
 In order to solve the problem numerically, we utilize a discretized triangulating scheme to express the problem as a minimization task over the space of piecewise linear functions. In Paper \cite{shen1992finite}, the linear finite dimensional approximation for the minimal surface with obstacle is analyzed while the existence and uniqueness of the solution for the discrete problem are shown, and meanwhile the error estimate of the approximation methodology is also obtained. 
 
