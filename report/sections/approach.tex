@@ -1,0 +1,124 @@
+\section{Approach}
+In this part, we will employ several unconstrained and constraints algorithms for 
+
+
+
+
+
+
+\subsection{Unconstrained Optimization Algorithms}
+\begin{algorithm}[H]
+  \caption{Gradient Descent Method (with Backtracking)}
+  \label{alg:Gradient}
+  \begin{algorithmic}[1]
+  \REQUIRE
+  Initial point $x^{0}$
+  \STATE For $k=0,1, \ldots$ \\
+  \STATE Choose stepsize $\alpha^{k}$ by backtracking. \\
+  \STATE $x^{k+1}=x^{k}-\alpha^{k} \nabla f\left(x^{k}\right)$. \\
+  \STATE Stop if $\left\|\nabla f\left(x^{k+1}\right)\right\| \leq \epsilon$. \\     
+  \ENSURE $x^{k+1}$ 
+ \end{algorithmic}
+ \end{algorithm} 
+ 
+ \begin{algorithm}[H]
+   \caption{Globalized Newton Method}
+   \label{alg:Newton}
+   \begin{algorithmic}[1]
+   \REQUIRE
+   Initial point $x^{0}, \beta_{1}, \beta_{2}, p$
+   \STATE For $k=0,1, \ldots$ \\
+   \STATE Compute the Newton direction $s^{k}$ by solving $\nabla^{2} f\left(x^{k}\right) s^{k}=-\nabla f\left(x^{k}\right)$. \\
+   \STATE If $-\nabla f\left(x^{k}\right)^{\mathrm{T}} s^{k} \geq \min \left\{\beta_{1}, \beta_{2}\left\|s^{k}\right\|^{p}\right\}\left\|s^{k}\right\|^{2}$, then set $d^{k}=s^{k}$. Otherwise set $d^{k}=-\nabla f\left(x^{k}\right)$. \\
+   \STATE Choose stepsize $\alpha^{k}$ by backtracking. \\  
+   \STATE $x^{k+1}=x^{k}+\alpha^{k} d^{k}$. \\
+   \STATE  Stop if $\left\|\nabla f\left(x^{k+1}\right)\right\| \leq \epsilon$. \\  
+   \ENSURE $x^{k+1}$ 
+  \end{algorithmic}
+  \end{algorithm} 
+ 
+ 
+ 
+ 
+ 
+ \begin{algorithm}[H]
+   \caption{L-BFGS Method}
+   \label{alg:L-BFGS}
+   \begin{algorithmic}[1]
+   \REQUIRE
+ Initial point $x^{0}, B_{0}$ \\
+   \STATE For $k=0,1, \ldots$ \\
+   \STATE Compute the quasi-Newton direction $d^{k}$ by solving $B_{k} s^{k}=-\nabla f\left(x^{k}\right), x^{k+1}=x^{k}+s^{k}$. \\
+   \STATE $\quad$ Stop if $\left\|\nabla f\left(x^{k+1}\right)\right\| \leq \epsilon$. \\
+   \STATE Set $y^{k}=\nabla f\left(x^{k+1}\right)-\nabla f\left(x^{k}\right), B_{k+1}^{\text {BFGS }}=B_{k}+\frac{y^{k}\left(y^{k}\right)^{\top}}{\left(y^{k}\right)^{\top} s^{k}}-\frac{\left(B_{k} s^{k}\right)\left(B_{k} s^{k}\right)^{\top}}{\left(s^{k}\right)^{\top} B_{k} s^{k}}$ \\
+   \ENSURE $x^{k+1}$ \\
+   \end{algorithmic}
+ \end{algorithm}
+ 
+\subsection{Constrained Optimization Algorithms}
+
+\begin{algorithm}[H]
+  \caption{Quadratic Penalty Method}
+  \label{alg:Penalty}
+  \begin{algorithmic}[1]
+  \REQUIRE
+  Initial point $x^{-1}$, penalty parameter $\alpha_{0}>0$
+  \STATE For $k=0,1, \ldots$ \\
+  \STATE Compute the global solution $x^{k}$ of the penalty problem $\min _{x} P_{\alpha_{k}}(x)$. \\     
+  \ENSURE Terminate if $x^{k} \in X$. Otherwise select $\alpha_{k+1}>\alpha_{k}$.  
+ \end{algorithmic}
+ \end{algorithm} 
+
+
+
+
+
+
+ \begin{algorithm}[H]
+  \caption{Projected Gradient Method}
+  \label{alg:Projected}
+  \begin{algorithmic}[1]
+  \REQUIRE
+  Initial point $x^{0} \in C, \sigma, \gamma \in(0,1)$
+  \STATE For $k=0,1, \ldots$ \\
+  \STATE $\quad$ Select $\lambda_{k}>0$ and compute $\nabla f\left(x^{k}\right)$ and the new direction $d^{k}=-F_{\lambda_{k}}\left(x^{k}\right)$.  \\
+  \STATE $\quad$ If $\left\|d^{k}\right\| \leq \lambda_{k} \epsilon$, then STOP and $x^{k}$ is output.  \\
+  \STATE Choose a maximal step size $\alpha_{k}$ by backtracking. \\    
+  \STATE Set $x^{k+1}=x^{k}+\alpha_{k} d^{k}$
+  %\ENSURE $x^{k+1}$ 
+ \end{algorithmic}
+ \end{algorithm} 
+
+
+
+\subsection{Addtional Techniques}
+In our experiment, we will explore four additional techniques (nonmonotone line search procedures, Barzilai-Borwein
+steps, inertial techniques and momentum, compact representation of the L-BFGS update) to adjust and potentially accelerate our proposed  algorithm. 
+Exact line search 
+The Barzilai-Borwein (BB) method is a popular and efficient tool for solving large-scale unconstrained optimization problems \cite{raydan1997barzilai}. Its search direction is the same as for the steepest descent method, but its stepsize rule is different. Owing to this, it converges much faster than the steepest descent method \cite{burdakov2019stabilized}. The full implement process is showed in algorithm \ref{alg:BB method} as follows.
+
+\begin{algorithm}[H]
+  \caption{Barzilai and Borwein Gradient Method}
+  \label{alg:BB method}
+  \begin{algorithmic}[1]
+  \REQUIRE
+Initial point $x^{0},0<\varepsilon \ll 1 $ \\
+  \STATE For $k=0,1, \ldots$ \\
+  \STATE If $\left\|\nabla f\left(x^{k}\right)\right\| \leq \varepsilon,$ stop ; otherwise let $d_{k}=-\nabla f\left(x^{k}\right)$. \\
+  \STATE If $k=0,$ find $\alpha_{0}$ by line search; otherwise compute $\alpha_{k}$ by 
+  $
+  \alpha_{k}=\frac{s_{k-1}^{T} y_{k-1}}{y_{k-1}^{T} y_{k-1}}
+  $
+  where $s_{k-1}=x_{k}-x_{k-1}, y_{k-1}=\nabla f\left(x^{k}\right)-\nabla f\left(x^{k-1}\right)$. \\
+  \STATE Set $x_{k+1}=x_{k}+\alpha_{k} d_{k}$ \\
+  \STATE $k:=k+1$, return to Step 1 \\
+  \end{algorithmic}
+\end{algorithm}
+
+The compact representation of the quasi-Newton updating matrix is derived to the use in the form of limited memory update in
+which the vector is replaced by a modified vector so that more available information about the function can be
+employed to increase the accuracy of Hessian approximations. The global convergence of the proposed method is proved.
+
+
+
+

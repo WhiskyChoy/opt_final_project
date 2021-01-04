@@ -22,4 +22,4 @@
 **/*.fdb_latexmk
 **/*.synctex.gz
 **/*.run.xml
-main.pdf
+report.pdf
