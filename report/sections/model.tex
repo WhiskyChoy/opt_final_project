@@ -36,6 +36,37 @@ We can see that if we switch $\theta_{i,j}$ to $x_{i,j}$, we will exactly have t
     f_{area} = \sum\limits^{\kappa}_{k=1}A_{k}(X) \quad \text{where} \quad X=\left(x_{i, j}\right) \in \mathbb{R}^{n \times n}
 \end{equation}
 
+To calculate the area of every triangle, we can utilize the property of \textbf{cross product}, that is, the norm of the cross product of two vectors is the area of the parallelogram constructed by such two vectors. For example, for $\forall i, j$, we set $\hat{x}_{ij}=(t_{ij}[0], t_{ij}[1], x_{ij})$ where $t_{ij}[0]$ is the first element of $t_{ij}$ and $t_{ij}[1]$ is the second one. Then, we can represent the area of triangle $T_1$ as follows, and note that $\overrightarrow{\hat{x}_{11}\hat{x}_{12}}$ is vertical to $\overrightarrow{\hat{x}_{13}\hat{x}_{12}}$ which is convenient for our calculation:
+
+\begin{equation}
+    A_1(x) = \frac{1}{2}|\overrightarrow{\hat{x}_{11}\hat{x}_{12}} \times \overrightarrow{\hat{x}_{13}\hat{x}_{12}}|
+\end{equation}
+
+However, we can see from the graph that there are two kinds of triangle so we need two equation to represent them. For lower triangle, we set $t_{ij}$ as the left-bottom point , and the formular would be:
+
+\begin{equation}
+    A_{ij}(x) = \frac{1}{2}|\overrightarrow{\hat{x}_{ij}\hat{x}_{(i+1)j}} \times \overrightarrow{\hat{x}_{ij\hat{x}_{i(j-1}}}|
+\end{equation}
+
+And for the upper triangle, we set $t_{ij}$ as the right-top point , and the formular would be:
+
+\begin{equation}
+    A_{ij}(x) = \frac{1}{2}|\overrightarrow{\hat{x}_{ij}\hat{x}_{(i-1)j}} \times \overrightarrow{\hat{x}_{ij\hat{x}_{i(j+1}}}|
+\end{equation}
+
+What's more, when we are taking the gradient, we can utilize the differential formular of cross product, that is:
+
+\begin{equation}
+    \frac{\partial}{\partial t} \vec{x(t)} \times \vec{y(t)} = \frac{\partial}{\partial t} \vec{x} \times \vec{y} + \vec{x} \times \frac{\partial}{\partial t} \vec{y}
+\end{equation}
+
+Since $A_{ij}(X)$ is the summation of the area of triangles, and for a point $\hat{x}_{ij}$, only \textbf{six neighbors} hold the area expression that takes in $\hat{x}_{ij}$. Therefore, we can define the neighbor function $nbr(k)$ say that:
+
+\begin{equation}
+    \frac{\mathrm{d}}{\mathrm{d}x_k}A_k = \frac{\mathrm{d}}{\mathrm{d}x_k}A_{nbr(k)[0]} + \frac{\mathrm{d}}{\mathrm{d}x_k}A_{nbr(k)[1]} + \frac{\mathrm{d}}{\mathrm{d}x_k}A_{nbr(k)[2]} + \frac{\mathrm{d}}{\mathrm{d}x_k}A_{nbr(k)[3]} + \frac{\mathrm{d}}{\mathrm{d}x_k}A_{nbr(k)[4]} + \frac{\mathrm{d}}{\mathrm{d}x_k}A_{nbr(k)[5]} 
+\end{equation}
+
+Through a similar process, we could tell the the hessian matrix will be very \textbf{sparse}. If we don't consider the boundary, there would be at most seven items each row that is not zero.
 
 \subsubsection{Minimum Surfaces}
 In order to solve the problem numerically, we utilize a discretized triangulating scheme to express the problem as a minimization task over the space of piecewise linear functions. In Paper \cite{shen1992finite}, the linear finite dimensional approximation for the minimal surface with obstacle is analyzed while the existence and uniqueness of the solution for the discrete problem are shown, and meanwhile the error estimate of the approximation methodology is also obtained. 
