@@ -1,3 +1,4 @@
+from numpy.lib.shape_base import tile
 from MyProblem import MinimalSurfaceProblem
 from typing import Callable, Union
 import numpy as np
@@ -19,8 +20,9 @@ class MinimalSurfaceSolver(Solver):
     f_value_arr: list = []
     g_norm_arr: list = []
     cpu_time_arr: list = []
+    name:str = 'default'
 
-    def draw_solved_gap(self):
+    def draw_solved_gap(self, log_x=False, log_y=False):
         iter_numbers = len(self.f_value_arr)
         f_opt = self.f_value_arr[-1]
         gap_arr = np.abs(np.array(self.f_value_arr) -
@@ -40,12 +42,19 @@ class MinimalSurfaceSolver(Solver):
         fig1.set_xlabel('The Number of Iterations')
         fig1.set_ylabel('The Relative Objective Function Gap')
 
-        fig2.set_xlabel('Elapsed Cpu-Time')
+        fig2.set_xlabel('Elapsed Cpu-Time (seconds)')
         fig2.set_ylabel('The Relative Objective Function Gap')
 
+        if log_x:
+            fig1.set_xscale('symlog')
+            fig2.set_xscale('symlog')
+        if log_y:
+            fig1.set_yscale('symlog')
+            fig2.set_yscale('symlog')
+        
         plt.show()
 
-    def draw_g_norm(self):
+    def draw_g_norm(self, log_x=False, log_y=False):
         iter_numbers = len(self.f_value_arr)
         iter_arr = list(range(iter_numbers))
 
@@ -61,11 +70,21 @@ class MinimalSurfaceSolver(Solver):
         fig1.set_xlabel('The Number of Iterations')
         fig1.set_ylabel('The Norm of Gradient')
 
-        fig2.set_xlabel('Elapsed Cpu-Time')
+        fig2.set_xlabel('Elapsed Cpu-Time (seconds)')
         fig2.set_ylabel('The Norm of Gradient')
+
+        if log_x:
+            fig1.set_xscale('symlog')
+            fig2.set_xscale('symlog')
+        if log_y:
+            fig1.set_yscale('symlog')
+            fig2.set_yscale('symlog')
+
+        plt.show()
 
     def show_summary(self, log: bool = True):
         exp = \
+            f'Solver Name: {self.name}\n' +\
             f'The iteration number is: {len(self.f_value_arr)-1}\n' + \
             f'The final objective function value is: {round(self.f_value_arr[-1],5)}\n' + \
             f'The final norm of the gradient is: {round(self.g_norm_arr[-1],5)}\n' + \
@@ -76,9 +95,9 @@ class MinimalSurfaceSolver(Solver):
 
     def draw_3d(self, use_custom: bool=False, colorful: bool=False):
         if use_custom:
-            draw_custom(self.surface_points, self.support_points)
+            draw_custom(self.surface_points, self.support_points, title=self.name)
         else:
-            draw_origin(self.surface_points, self.support_points, colorful)
+            draw_origin(self.surface_points, self.support_points, colorful, title=self.name)
 
     def reset(self):
         self.final_solution = None
@@ -93,6 +112,7 @@ class MinimalSurfaceSolver(Solver):
 class GradientArmijoSolver(MinimalSurfaceSolver):
     @autoargs
     def __init__(self, tol=1e-3, max_iter=10000, s=1, sigma=0.5, gamma=0.1):
+        self.name = 'Gradient Armijo'
         pass
 
     @overrides
@@ -144,6 +164,7 @@ class GlobalizedNewtonSolver(MinimalSurfaceSolver):
     @autoargs
     def __init__(self, tol=1e-3, max_iter=10000, s=1, sigma=0.1, gamma=0.1,
                  beta1=1e-6, beta2=1e-6, p=0.1):
+        self.name = 'Globalized Newton'
         pass
 
     @overrides
@@ -201,6 +222,7 @@ class GlobalizedNewtonSolver(MinimalSurfaceSolver):
 class LBFGSSolver(MinimalSurfaceSolver):
     @autoargs
     def __init__(self, tol=1e-3, max_iter=10000, s=1, sigma=0.5, gamma=0.1, m=10):
+        self.name = 'L-BFGS'
         pass
 
     @overrides
@@ -233,7 +255,7 @@ class LBFGSSolver(MinimalSurfaceSolver):
             ObjV_temp = problem.aim_func(vars_current + alpha * d_k)
         s_list.append(alpha * d_k)
         y_list.append(problem.cal_gradient(vars_current + alpha * d_k) - problem.cal_gradient(vars_current))
-        rho_list.append(1 / (s_list[-1] @ y_list[-1]))
+        rho_list.append(1 / (s_list[-1] @ y_list[-1] + 1e-8) )
         vars_current = vars_current + alpha * d_k
         objv_current = problem.aim_func(vars_current)
         grad_value = problem.cal_gradient(vars_current)
@@ -241,7 +263,7 @@ class LBFGSSolver(MinimalSurfaceSolver):
         ng_list.append(np.log(ng))
         paths.append(vars_current)
         # Step3: Iteration
-        iter_count = 1
+        iter_count = 0
         while ng > self.tol and iter_count < self.max_iter:
             current = time.time()
             # Compute d_k
@@ -267,7 +289,7 @@ class LBFGSSolver(MinimalSurfaceSolver):
                 ObjV_temp = problem.aim_func(vars_current + alpha * d_k)
             s_list.append(alpha * d_k)
             y_list.append(problem.cal_gradient(vars_current + alpha * d_k) - problem.cal_gradient(vars_current))
-            rho_list.append(1 / (s_list[-1] @ y_list[-1]))
+            rho_list.append(1 / (s_list[-1] @ y_list[-1] + 1e-8))
             if len(s_list) > 10:
                 del s_list[0]
                 del y_list[0]
@@ -294,6 +316,7 @@ class LBFGSSolver(MinimalSurfaceSolver):
 class InertialTechniqueSolver(MinimalSurfaceSolver):
     @autoargs
     def __init__(self, tol=1e-3, max_iter=10000, s=1, sigma=0.5, gamma=0.1):
+        self.name = 'Inertial Tech'
         pass
 
     @overrides
@@ -326,7 +349,6 @@ class InertialTechniqueSolver(MinimalSurfaceSolver):
             y_k = vars_current + beta_k*(vars_current-vars_before) 
             grad_value = problem.cal_gradient(y_k)
 
-            print(f'iteration {iter_count} : {round(ng, 8)}', end=' ')
             # INNER STEP1: get d_k
             d_k = -grad_value
             # INNER STEP2: get a_k
@@ -360,6 +382,7 @@ class InertialTechniqueSolver(MinimalSurfaceSolver):
 class BarzilaiBorweinSolver(MinimalSurfaceSolver):
     @autoargs
     def __init__(self, tol=1e-3, max_iter=10000, s=1, sigma=0.5, gamma=0.1):
+        self.name = 'Barzilai Borwein'
         pass
 
     @overrides
@@ -397,7 +420,7 @@ class BarzilaiBorweinSolver(MinimalSurfaceSolver):
                 sk = vars_current-vars_before                
                 yk = grad_value - grad_before
                 alpha = sk.T@yk/(yk.T@yk)
-                print(alpha)
+                # print(alpha)
             grad_before = grad_value
             vars_before = vars_current
             vars_current = vars_current + alpha * d_k  # Update vars
@@ -420,7 +443,8 @@ class BarzilaiBorweinSolver(MinimalSurfaceSolver):
 
 class ExactLineSearchSolver(MinimalSurfaceSolver):
     @autoargs
-    def __init__(self, tol=1e-3, max_iter=100000, s=1, sigma=0.5, gamma=0.1):
+    def __init__(self, tol=1e-3, max_iter=10000, s=1, sigma=0.5, gamma=0.1):
+        self.name = 'Exactline Search'
         pass
 
     @overrides
@@ -449,7 +473,7 @@ class ExactLineSearchSolver(MinimalSurfaceSolver):
             # INNER STEP2: get a_k
             #alpha = self.s  # initial alpha as s
             alpha = -grad_value.T*d_k/(d_k.T@hessian@d_k)
-            print(alpha)
+            # print(alpha)
             vars_current = vars_current + alpha * d_k  # Update vars
             objv_current = problem.aim_func(vars_current)
             grad_value = problem.cal_gradient(vars_current)
@@ -474,6 +498,7 @@ def project(vars: np.ndarray, b_s: Callable=None):
 
 class ProjectedGradientArmijoSolver(GradientArmijoSolver):
     def __init__(self, tol=1e-3, max_iter=10000, s=1, sigma=0.1, gamma=0.1, lambda_val: Union[int, Callable] = 1):
+        self.name = 'Projected Gradient'
         super().__init__(tol, max_iter, s, sigma, gamma)
         if isinstance(lambda_val, int):
             def lambda_at(_): return lambda_val
@@ -535,6 +560,7 @@ class ProjectedGradientArmijoSolver(GradientArmijoSolver):
 class PenaltyMethodSolver(MinimalSurfaceSolver):
 
     def __init__(self, tol=1e-3, max_iter=100, inner_tol=1e-2, inner_iter_max=50, s=1, sigma=0.1, gamma=0.1, penalty_s=0.0001, penalty_gamma=10):
+        self.name = 'Penalty Method'
         self.penalty_s = penalty_s
         self.penalty_gamma = penalty_gamma
         self.tol = tol
@@ -591,7 +617,7 @@ class PenaltyMethodSolver(MinimalSurfaceSolver):
             vars_current, grad_value, objv_current, ng, _ = self.solver.solve(current_problem, vars_current)
             penalty_alpha *= self.penalty_gamma
             iter_count += 1
-            if reduce(np.logical_and, vars_current < problem.b_s(vars_current)):
+            if reduce(np.logical_and, np.abs(vars_current-problem.b_s(vars_current))<1e-2):
                 break
             if show_process:
                 print(f'iteration {iter_count} : {round(ng, 8)}', end=' ')

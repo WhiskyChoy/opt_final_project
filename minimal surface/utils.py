@@ -1,4 +1,5 @@
 import random
+from typing import Callable
 from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from matplotlib import pyplot as plt, cm
@@ -6,6 +7,77 @@ import numpy as np
 from colorsys import hsv_to_rgb
 from math import sqrt
 from random import randint, uniform
+
+def draw_multiple_solved_gap_iter(solvers:list, log_x=False, log_y=False)->None:
+    for solver in solvers:
+        iter_numbers = len(solver.f_value_arr)
+        f_opt = solver.f_value_arr[-1]
+        gap_arr = np.abs(np.array(solver.f_value_arr) -
+                         np.tile(f_opt, iter_numbers)) / max(1, np.abs(f_opt))
+        iter_arr = list(range(iter_numbers))
+        label = solver.name
+        plt.plot(iter_arr, gap_arr, label=label)
+    add_at_end = ' (log x)' if log_x else '' + ' (log y)' if log_y else ''
+    plt.title(f'Number of Iteration vs Relative Objective Function Gap{add_at_end}')
+    plt.xlabel('The Number of Iterations')
+    plt.ylabel('The Relative Objective Function Gap')
+    if log_x:
+        plt.xscale('log')
+    if log_y:
+        plt.yscale('log')
+    plt.legend()
+    plt.show()
+
+def draw_multiple_solved_gap_cpu(solvers:list, log_x=False, log_y=False)->None:
+    for solver in solvers:
+        iter_numbers = len(solver.f_value_arr)
+        f_opt = solver.f_value_arr[-1]
+        gap_arr = np.abs(np.array(solver.f_value_arr) -
+                         np.tile(f_opt, iter_numbers)) / max(1, np.abs(f_opt))
+        label = solver.name
+        plt.plot(solver.cpu_time_arr, gap_arr, label=label)
+    add_at_end = ' (log x)' if log_x else '' + ' (log y)' if log_y else ''
+    plt.title(f'Elapsed Cpu-Time vs Relative Objective Function Gap{add_at_end}')
+    plt.xlabel('Elapsed Cpu-Time (seconds)')
+    plt.ylabel('The Relative Objective Function Gap')
+    if log_x:
+        plt.xscale('symlog')
+    if log_y:
+        plt.yscale('log')
+    plt.legend()
+    plt.show()
+
+def draw_multiple_g_norm_iter(solvers:list, log_x=False, log_y=False)->None:
+    for solver in solvers:
+        iter_numbers = len(solver.f_value_arr)
+        iter_arr = list(range(iter_numbers))
+        label = solver.name
+        plt.plot(iter_arr, solver.g_norm_arr, label=label)
+    add_at_end = ' (log x)' if log_x else '' + ' (log y)' if log_y else ''
+    plt.title(f'Number of Iteration vs Norm of Gradient{add_at_end}')
+    plt.xlabel('The Number of Iterations')
+    plt.ylabel('The Norm of Gradient')
+    if log_x:
+        plt.xscale('log')
+    if log_y:
+        plt.yscale('log')
+    plt.legend()
+    plt.show()
+
+def draw_multiple_g_norm_cpu(solvers:list, log_x=False, log_y=False)->None:
+    for solver in solvers:
+        label = solver.name
+        plt.plot(solver.cpu_time_arr, solver.g_norm_arr, label=label)
+    add_at_end = ' (log x)' if log_x else '' + ' (log y)' if log_y else ''
+    plt.title(f'Elapsed Cpu-Time vs Norm of Gradient{add_at_end}')
+    plt.xlabel('Elapsed Cpu-Time (seconds)')
+    plt.ylabel('The Norm of Gradient')
+    if log_x:
+        plt.xscale('log')
+    if log_y:
+        plt.yscale('log')
+    plt.legend()
+    plt.show()
 
 def get_color(val: float, max_val: float, base: float, change_range: float, inverse: bool)->tuple:
     hsv = None
@@ -29,11 +101,11 @@ def get_triangles(points: list) -> list:
             result = [*result, [p1, p2, p4], [p1, p4, p3]]
     return result
 
-def draw_origin(surface_points: list, inner_sup_points: list = None, colorful: bool = False):
+def draw_origin(surface_points: list, inner_sup_points: list = None, colorful: bool = False, title:str=None):
     evaluate_points = [p[2] for p in surface_points]
     max_height = max(*evaluate_points)
     min_height = min(*evaluate_points)
-    fig = plt.figure()
+    fig = plt.figure(title)
     ax = Axes3D(fig)
     surface_x, surface_y, surface_z = zip(*surface_points)
     surf = ax.plot_trisurf(surface_x, surface_y, surface_z, linewidth=0.2, antialiased=True, alpha=0.9, cmap=(cm.rainbow if colorful else None))
@@ -46,13 +118,15 @@ def draw_origin(surface_points: list, inner_sup_points: list = None, colorful: b
         support_x, support_y, support_z = zip(*inner_sup_points)
         ax.plot_trisurf(support_x, support_y, support_z, linewidth=0.2, antialiased=True, color='red')
     ax.set_zlim3d(min_height, 1.25 * max_height)
+    ax.set_title(title,  loc='center')
+    # plt.legend()
     plt.show()
 
-def draw_custom(surface_points: list, inner_sup_points: list = None, surface_base: float=0.8, change_range: float=0.1, inverse: bool=True, support_color: float = 0.0):
+def draw_custom(surface_points: list, inner_sup_points: list = None, surface_base: float=0.8, change_range: float=0.1, inverse: bool=True, support_color: float = 0.0, title:str=None):
     evaluate_points = [p[2] for p in surface_points]
     max_height = max(*evaluate_points)
     min_height = min(*evaluate_points)
-    fig = plt.figure()
+    fig = plt.figure(title)
     ax = Axes3D(fig)
 
     surface_triangles = get_triangles(surface_points)
@@ -86,6 +160,24 @@ def draw_custom(surface_points: list, inner_sup_points: list = None, surface_bas
             ax.add_collection3d(Poly3DCollection(p_s, facecolor=colors))
 
     ax.set_zlim3d(min_height, 1.25 * max_height)
+    ax.set_title(title,  loc='center')
+    # plt.legend()
+    plt.show()
+
+def draw_boundary_only(r: Callable, num:int=100):
+    y_bottom= y_top = x_right = x_left = np.linspace(0,1,num)
+    x_top = y_left = np.repeat(0, num)
+    x_bottom = y_right = np.repeat(1, num)
+    z_left = r(x_left, y_left)
+    z_right = r(x_right, y_right)
+    z_top = r(x_top, y_top)
+    z_bottom = r(x_bottom, y_bottom)
+    fig = plt.figure()
+    axes3d = Axes3D(fig)
+    axes3d.plot(x_left,y_left,z_left)
+    axes3d.plot(x_right,y_right,z_right)
+    axes3d.plot(x_top,y_top,z_top)
+    axes3d.plot(x_bottom,y_bottom,z_bottom)
     plt.show()
 
 class ObstacleGenerator:
