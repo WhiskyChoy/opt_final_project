@@ -3,9 +3,10 @@ In this part, we will employ several unconstrained and constrained algorithms fo
 
 \subsection{Unconstrained Optimization Algorithms}
 The gradient descent method with backtracking is the most common and basic algorithm to solve unconstrained optimization problem. The full gradient method is showed in algorithm \ref{alg:Gradient}. The step size in every iteration should satisfy the Amrijo Condition:
-$$
-f\left(x^{k}+\alpha_{k} d^{k}\right)-f\left(x^{k}\right) \leq \gamma \alpha_{k} \cdot \nabla f\left(x^{k}\right)^{\top} d^{k}
-$$
+\begin{equation}
+  f\left(x^{k}+\alpha_{k} d^{k}\right)-f\left(x^{k}\right) \leq \gamma \alpha_{k} \cdot \nabla f\left(x^{k}\right)^{\top} d^{k} 
+\end{equation}
+
 where $\alpha_{k}$ can be determined after finitely many steps if $d^{k}$ is a descent direction.
 \begin{algorithm}[H]
   \caption{Gradient Descent Method (with Backtracking)}
@@ -92,13 +93,14 @@ In our experiment, we will explore three additional techniques (nonmonotone line
 
 Exact line search is proposed to modify the steps when comparing with gradient method with backtracking. Generally, it's expected to have better performance but with poor operation time. It can be formulated as $\alpha_{k}=\operatorname{argmin}_{\alpha \geq 0} f\left(x^{k}+\alpha d^{k}\right)$ to choose $\alpha_{k}$ to achieve the largest descent. 
 
-Inertial techniques and momentum method that are similar to Nesterov’s acceleration behave well to improve the convergence performance. The extrapolation step can be represented as $$
+Inertial techniques and momentum method that are similar to Nesterov’s acceleration behave well to improve the convergence performance. The extrapolation step can be represented as 
+\begin{equation}
 y^{k+1}=x^{k}+\beta_{k}\left(x^{k}-x^{k-1}\right), \quad \beta_{k}>0
-$$
+\end{equation}
 The new iterate $x^{k+1}$ is updated as follows:
-$$
+\begin{equation}
 x^{k+1}=y^{k+1}-\alpha_{k} \nabla f\left(x^{k}\right)=x^{k}-\alpha_{k} \nabla f\left(x^{k}\right)+\beta_{k}\left(x^{k}-x^{k-1}\right)
-$$
+\end{equation}
 where $\alpha_{k}$ is a suitable step size and the gradient is now evaluated at $x^{k}$ and not at $y^{k+1} $.
 
 The Barzilai-Borwein (BB) method is a popular and efficient tool for solving large-scale unconstrained optimization problems \cite{raydan1997barzilai}. Its search direction is the same as for the steepest descent method, but its stepsize rule is different. Owing to this, it converges much faster than the steepest descent method \cite{burdakov2019stabilized}. The full implement process is showed in algorithm \ref{alg:BB method} as follows.
