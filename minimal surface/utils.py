@@ -9,7 +9,17 @@ from math import sqrt
 from random import randint, uniform
 import cv2
 
-def get_cie_arr(height: int)->np.ndarray:
+def get_obstacle_by_image(image_path: str, height: float) -> tuple:
+    img = cv2.imread(image_path, cv2.THRESH_BINARY)
+    length = len(img)
+    arr = np.zeros([length, length])
+    for i in range(length):
+        for j in range(length):
+            if img[i][j] == 0:
+                arr[i][j] = height
+    return length, arr
+
+def get_cie_arr(height: float)->np.ndarray:
     img = cv2.imread("cie.png", cv2.THRESH_BINARY)
     arr = np.zeros([21, 21])
     for i in range(21):
